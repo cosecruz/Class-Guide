@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:class_guide/shared/loading.dart';
+import 'package:class_guide/shared/constants.dart';
 import 'package:class_guide/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:class_guide/screens/home/home.dart';
@@ -16,10 +18,12 @@ class _Sign_inState extends State<Sign_in> {
   String error = '';
   String _email = '';
   String _password = '';
+  bool loading = false;
+
   final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return loading ? Loading() : Scaffold(
       appBar: AppBar(
         title: Text('Sign in to Class Guide'),
         backgroundColor: Colors.blueAccent,
@@ -40,6 +44,7 @@ class _Sign_inState extends State<Sign_in> {
             children: <Widget>[
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(hintText: 'Email'),
                 validator: (val) => val.isEmpty ? 'Enter an email' : null,
                 onChanged: (val) {
                   setState(() => _email = val);
@@ -47,6 +52,7 @@ class _Sign_inState extends State<Sign_in> {
               ),
               SizedBox(height: 20.0),
               TextFormField(
+                decoration: textInputDecoration.copyWith(hintText: 'Password'),
                 obscureText: true,
                 validator: (val) =>
                     val.length < 6 ? 'Enter a password 6+ chars long' : null,
@@ -66,10 +72,12 @@ class _Sign_inState extends State<Sign_in> {
                   ),
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
+                      setState(() => loading = true);
                       dynamic result = await _auth.signInWithEmailAndPassword(
                           _email, _password);
                       if (result == null) {
                         setState(() {
+                          loading = false;
                           error = 'Could not sign in with those credentials';
                         });
                       }

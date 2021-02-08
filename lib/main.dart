@@ -1,3 +1,4 @@
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math';
@@ -10,9 +11,15 @@ import 'package:class_guide/models/user.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // await AndroidAlarmManager.initialize();
+  // await AndroidAlarmManager.periodic(Duration(seconds: 10), 0, callback);
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
+//void callback() {
+// print('wake');
+//}
 
 class MyApp extends StatelessWidget {
   //final Future<FirebaseApp> _fbApp = Firebase.initializeApp();
@@ -22,6 +29,7 @@ class MyApp extends StatelessWidget {
     return StreamProvider<Users>.value(
       value: AuthService().user,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Wrapper(),
       ),
       /*FutureBuilder(
